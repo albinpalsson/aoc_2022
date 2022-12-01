@@ -25,8 +25,8 @@ import System.IO
 
 main :: IO ()
 main = do
-  contents <- readLines "input.txt"
-  expect (length contents) 1 \`ftrace\` show contents
+  lines <- readLines "input.txt"
+  expect (length lines) 1 \`ftrace\` show lines
 
 EOT
 
