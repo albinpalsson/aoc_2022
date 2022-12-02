@@ -2,6 +2,7 @@ module AocShared where
 
 import Debug.Trace (trace)
 import Lib ()
+import qualified Data.Text as Text
 
 expect :: (Eq a, Show a) => a -> a -> IO ()
 expect a b
@@ -15,3 +16,8 @@ readLines :: FilePath -> IO [String]
 readLines fp = do
   contents <- readFile fp
   return $ lines contents
+
+readLines' :: FilePath -> IO [Text.Text]
+readLines' fp = do
+  contents <- readFile fp
+  return $ Text.lines $ Text.pack contents
