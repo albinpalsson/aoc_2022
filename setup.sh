@@ -20,8 +20,6 @@ function template_init () {
 module Main where
 
 import AocShared (expect, ftrace, readLines)
-import Lib
-import System.IO
 
 main :: IO ()
 main = do
