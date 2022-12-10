@@ -1,8 +1,8 @@
 module AocShared where
 
 import Debug.Trace (trace)
-import Lib ()
 import qualified Data.Text as Text
+import Data.List (foldl')
 
 expect :: (Eq a, Show a) => a -> a -> IO ()
 expect a b
@@ -26,7 +26,7 @@ type Grid a = [[a]]
 
 data Coord = Coord {x :: Int, y :: Int} deriving (Show, Eq, Ord)
 
-type Dir = (Coord -> Coord)
+type Dir = Coord -> Coord
 
 right, left, up, down :: Dir
 right (Coord x y) = Coord (x + 1) y
@@ -38,9 +38,15 @@ gsize :: Grid a -> Coord
 gsize g = Coord (length (g !! 0)) (length g)
 
 at :: Grid a -> Coord -> a
-at g c@(Coord x y) = (g !! y) !! x
-
+at g (Coord x y) = g !! y !! x
 
 chunksOf :: Int -> [a] -> [[a]]
 chunksOf n [] = []
-chunksOf n xs = [(take n xs)] ++ (chunksOf n (drop n xs))
+chunksOf n xs = [take n xs] ++ chunksOf n (drop n xs)
+
+splitOn :: String -> [Char] -> [String]
+splitOn sep = foldl' gather [""]
+  where
+    gather prev c
+      | c `elem` sep = prev ++ [""]
+      | otherwise = init prev ++ [last prev ++ [c]]
