@@ -39,3 +39,8 @@ gsize g = Coord (length (g !! 0)) (length g)
 
 at :: Grid a -> Coord -> a
 at g c@(Coord x y) = (g !! y) !! x
+
+
+chunksOf :: Int -> [a] -> [[a]]
+chunksOf n [] = []
+chunksOf n xs = [(take n xs)] ++ (chunksOf n (drop n xs))
