@@ -24,7 +24,7 @@ readLines' fp = do
 
 type Grid a = [[a]]
 
-data Coord = Coord {x :: Int, y :: Int} deriving (Show, Eq, Ord)
+data Coord = Coord {x :: !Int, y :: !Int} deriving (Show, Eq, Ord)
 
 type Dir = Coord -> Coord
 
@@ -35,14 +35,14 @@ up (Coord x y) = Coord x (y - 1)
 down (Coord x y) = Coord x (y + 1)
 
 gsize :: Grid a -> Coord
-gsize g = Coord (length (g !! 0)) (length g)
+gsize g = Coord (length (head g)) (length g)
 
 at :: Grid a -> Coord -> a
 at g (Coord x y) = g !! y !! x
 
 chunksOf :: Int -> [a] -> [[a]]
 chunksOf n [] = []
-chunksOf n xs = [take n xs] ++ chunksOf n (drop n xs)
+chunksOf n xs = take n xs : chunksOf n (drop n xs)
 
 splitOn :: String -> [Char] -> [String]
 splitOn sep = foldl' gather [""]
