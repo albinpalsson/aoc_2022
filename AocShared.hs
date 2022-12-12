@@ -22,6 +22,20 @@ readLines' fp = do
   contents <- readFile fp
   return $ Text.lines $ Text.pack contents
 
+chunksOf :: Int -> [a] -> [[a]]
+chunksOf n [] = []
+chunksOf n xs = take n xs : chunksOf n (drop n xs)
+
+splitOn :: String -> [Char] -> [String]
+splitOn sep = foldl' gather [""]
+  where
+    gather prev c
+      | c `elem` sep = prev ++ [""]
+      | otherwise = init prev ++ [last prev ++ [c]]
+
+
+----------- grid stuff... -----------
+
 type Grid a = [[a]]
 
 data Coord = Coord {x :: !Int, y :: !Int} deriving (Show, Eq, Ord)
@@ -40,13 +54,21 @@ gsize g = Coord (length (head g)) (length g)
 at :: Grid a -> Coord -> a
 at g (Coord x y) = g !! y !! x
 
-chunksOf :: Int -> [a] -> [[a]]
-chunksOf n [] = []
-chunksOf n xs = take n xs : chunksOf n (drop n xs)
-
-splitOn :: String -> [Char] -> [String]
-splitOn sep = foldl' gather [""]
+inside :: Coord -> Grid a -> Bool
+inside (Coord x y) g = and [x >= 0, y >= 0, x < mx, y < my]
   where
-    gather prev c
-      | c `elem` sep = prev ++ [""]
-      | otherwise = init prev ++ [last prev ++ [c]]
+    Coord mx my = gsize g
+
+gset :: Grid a -> Coord -> a -> Grid a
+gset grid (Coord x y) v = take y grid ++ [updated] ++ drop (y + 1) grid
+  where
+    updated = take x row ++ [v] ++ drop (x + 1) row
+    row = grid !! y
+
+iterNext :: Coord -> Grid a -> Maybe Coord
+iterNext c@(Coord x y) g
+  | x < mx - 1 = Just (right c)
+  | y < my - 1 = Just (Coord 0 (y + 1))
+  | otherwise = Nothing
+  where
+    (Coord mx my) = gsize g

@@ -73,14 +73,6 @@ maxScenic c best g
     next = iterNext c g
     best' = max best (scenicScore c g)
 
-iterNext :: Coord -> Forest -> Maybe Coord
-iterNext c@(Coord x y) g
-  | x < mx - 1 = Just (right c)
-  | y < my - 1 = Just (Coord 0 (y + 1))
-  | otherwise = Nothing
-  where
-    (Coord mx my) = gsize g
-
 part1, part2 :: [[Char]] -> Int
 part1 = (countVis (Coord 0 0) 0) . parse
 part2 = (maxScenic (Coord 0 0) 0) . parse
